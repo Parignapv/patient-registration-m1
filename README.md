@@ -1,4 +1,4 @@
-# 🏥 Patient Registration & Identity Management (PRD-01)
+#  Patient Registration & Identity Management (PRD-01)
 
 <p align="center">
 
@@ -15,7 +15,7 @@ This repository documents the business requirements, workflows, functional speci
 
 ---
 
-# 📖 Table of Contents
+#  Table of Contents
 
 - Overview
 - Problem Statement
@@ -33,7 +33,7 @@ This repository documents the business requirements, workflows, functional speci
 
 ---
 
-# 📖 Overview
+#  Overview
 
 Patient Registration is the first interaction between a patient and the hospital.
 
@@ -43,7 +43,7 @@ The module is designed as **PRD-01** of the **Hospital Operations Suite**.
 
 ---
 
-# 🚨 Problem Statement
+#  Problem Statement
 
 Many hospitals continue to rely on paper-based or semi-digital registration processes, resulting in:
 
@@ -58,7 +58,7 @@ This PRD defines a standardized workflow to improve registration accuracy, speed
 
 ---
 
-# 🎯 Project Goals
+#  Project Goals
 
 - Eliminate duplicate patient records
 - Generate unique UHIDs
@@ -70,7 +70,7 @@ This PRD defines a standardized workflow to improve registration accuracy, speed
 
 ---
 
-# 🏥 Patient Registration Workflow
+#  Patient Registration Workflow
 
 ```mermaid
 flowchart TD
@@ -102,7 +102,7 @@ K --> L[Proceed to Consultation]
 
 ---
 
-# 📌 Module Scope
+#  Module Scope
 
 ### Included
 
@@ -128,7 +128,7 @@ K --> L[Proceed to Consultation]
 
 ---
 
-# ✨ Key Functional Requirements
+#  Key Functional Requirements
 
 The module supports:
 
@@ -147,7 +147,7 @@ The module supports:
 
 ---
 
-# ⚙️ Non-Functional Requirements
+#  Non-Functional Requirements
 
 The solution is designed to provide:
 
@@ -161,7 +161,7 @@ The solution is designed to provide:
 
 ---
 
-# 🔗 System Integrations
+#  System Integrations
 
 This module integrates with:
 
@@ -176,7 +176,7 @@ This module integrates with:
 
 ---
 
-# 📚 Standards & Compliance
+#  Standards & Compliance
 
 The requirements are aligned with:
 
@@ -191,7 +191,7 @@ The requirements are aligned with:
 
 ---
 
-# 🤖 AI Features
+#  AI Features
 
 Future enhancements include:
 
@@ -202,7 +202,7 @@ Future enhancements include:
 
 ---
 
-# 📂 Repository Contents
+#  Repository Contents
 
 | File | Description |
 |------|-------------|
@@ -211,7 +211,7 @@ Future enhancements include:
 
 ---
 
-# 🚀 Future Roadmap
+#  Future Roadmap
 
 - Duplicate Detection Engine
 - Patient Self Registration
@@ -223,7 +223,7 @@ Future enhancements include:
 
 ---
 
-# 📄 Document Information
+#  Document Information
 
 | Item | Value |
 |------|-------|
@@ -235,7 +235,7 @@ Future enhancements include:
 
 ---
 
-# ⭐ Repository Purpose
+# Repository Purpose
 
 This repository serves as the official requirements documentation for the **Patient Registration & Identity Management** module and acts as a reference for future implementation and system design.
 
