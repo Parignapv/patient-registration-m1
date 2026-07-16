@@ -1,0 +1,12 @@
+{
+  "name": "uhid-registration-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Patient Registration & Identity Management (PRD-01)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

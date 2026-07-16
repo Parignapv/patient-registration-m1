@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UHID Registration — OPD Front Desk</title>
+<style>
+  :root{
+    --ink:#1c2b2d;
+    --paper:#f6f5f1;
+    --panel:#ffffff;
+    --line:#d8d4c8;
+    --teal:#2f6f6b;
+    --teal-dark:#204d4a;
+    --amber:#c98a3a;
+    --danger:#a8433a;
+    --ok:#3d7a4f;
+    --mono: 'Courier New', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    padding:24px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;}
+  header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    border-bottom:3px solid var(--ink);
+    padding-bottom:14px;
+    margin-bottom:20px;
+  }
+  header h1{
+    font-size:1.6rem;
+    margin:0;
+    letter-spacing:0.02em;
+  }
+  header .sub{
+    font-family: Arial, sans-serif;
+    font-size:0.75rem;
+    color:#5a5a52;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+  }
+  .badge-row{
+    font-family: Arial, sans-serif;
+    font-size:0.7rem;
+    color:#5a5a52;
+    text-align:right;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap:20px;
+  }
+  @media(max-width:900px){ .grid{grid-template-columns:1fr;} }
+
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:20px 22px;
+    margin-bottom:20px;
+  }
+  .panel h2{
+    font-family: Arial, sans-serif;
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--teal-dark);
+    margin:0 0 14px 0;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  label{
+    display:block;
+    font-family: Arial, sans-serif;
+    font-size:0.72rem;
+    color:#555;
+    margin-bottom:4px;
+    margin-top:12px;
+  }
+  label:first-of-type{margin-top:0;}
+  input[type=text], input[type=number], input[type=date], select, textarea{
+    width:100%;
+    padding:8px 9px;
+    border:1px solid #b9b5a7;
+    border-radius:3px;
+    font-family: Arial, sans-serif;
+    font-size:0.9rem;
+    background:#fffdf9;
+    color:var(--ink);
+  }
+  textarea{resize:vertical; min-height:50px;}
+  input:focus, select:focus, textarea:focus{
+    outline:2px solid var(--teal);
+    outline-offset:1px;
+  }
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .row3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;}
+
+  .hint{font-family:Arial, sans-serif; font-size:0.68rem; color:#8a8578; margin-top:3px;}
+
+  button{
+    font-family: Arial, sans-serif;
+    font-size:0.8rem;
+    font-weight:600;
+    letter-spacing:0.03em;
+    padding:9px 16px;
+    border-radius:3px;
+    border:1px solid var(--teal-dark);
+    background:var(--teal);
+    color:#fff;
+    cursor:pointer;
+    margin-top:14px;
+  }
+  button:hover{background:var(--teal-dark);}
+  button.secondary{
+    background:transparent;
+    color:var(--teal-dark);
+  }
+  button.secondary:hover{background:#eef4f3;}
+  button.small{
+    padding:5px 10px;
+    font-size:0.7rem;
+    margin-top:6px;
+  }
+  button.danger{border-color:var(--danger); background:transparent; color:var(--danger);}
+  button.danger:hover{background:#fbeceb;}
+  button.amber{border-color:var(--amber); background:var(--amber);}
+  button.amber:hover{background:#a8722c;}
+  button:disabled{opacity:0.5; cursor:not-allowed;}
+
+  .verify-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .verify-row input{flex:1;}
+  .status-pill{
+    font-family: Arial, sans-serif;
+    font-size:0.68rem;
+    font-weight:700;
+    padding:4px 9px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .status-pill.pending{background:#f0ece0; color:#8a7d55;}
+  .status-pill.linked{background:#e2efe4; color:var(--ok);}
+
+  .checkline{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:14px;
+    font-family:Arial, sans-serif;
+    font-size:0.82rem;
+  }
+  .checkline input{width:auto;}
+
+  .divider{border:none; border-top:1px dashed var(--line); margin:16px 0;}
+
+  .uhid-out{
+    font-family: var(--mono);
+    font-size:1.1rem;
+    background:#f0ece0;
+    border:1px dashed var(--amber);
+    padding:10px 12px;
+    border-radius:3px;
+    display:none;
+    margin-top:10px;
+  }
+  .uhid-out.show{display:block;}
+  .uhid-out .token-line{
+    font-family: Arial, sans-serif;
+    font-size:0.8rem;
+    color:#6b5a2c;
+    margin-top:6px;
+  }
+
+  .quick-box{
+    border:2px solid var(--danger);
+    background:#fff6f5;
+  }
+  .quick-box h2{color:var(--danger);}
+  .quick-box p{font-family:Arial, sans-serif; font-size:0.8rem; color:#6b3630; margin-top:0;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-family: Arial, sans-serif;
+    font-size:0.78rem;
+  }
+  th, td{
+    text-align:left;
+    padding:8px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  th{
+    text-transform:uppercase;
+    font-size:0.65rem;
+    letter-spacing:0.06em;
+    color:#5a5a52;
+    background:#f0ede4;
+  }
+  tr:hover td{background:#faf9f5;}
+  .tag{
+    display:inline-block;
+    font-size:0.68rem;
+    padding:2px 7px;
+    border-radius:10px;
+    font-weight:700;
+  }
+  .tag.ok{background:#e2efe4;color:var(--ok);}
+  .tag.no{background:#f0ece0;color:#8a7d55;}
+  .tag.mlc{background:#f7e2df;color:var(--danger);}
+  .empty-row td{
+    text-align:center;
+    color:#9a9585;
+    font-style:italic;
+    padding:20px;
+  }
+  .count-chip{
+    font-family:Arial, sans-serif;
+    font-size:0.7rem;
+    background:var(--teal);
+    color:#fff;
+    padding:2px 9px;
+    border-radius:12px;
+    margin-left:8px;
+  }
+
+  /* --- 5.1 duplicate-avoidance live suggestions --- */
+  .suggest-box{
+    margin-top:8px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:#fbfaf6;
+    display:none;
+  }
+  .suggest-box.show{display:block;}
+  .suggest-box .suggest-head{
+    font-family:Arial, sans-serif;
+    font-size:0.66rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:#8a7d55;
+    padding:6px 10px;
+    border-bottom:1px solid var(--line);
+  }
+  .suggest-item{
+    padding:7px 10px;
+    font-family:Arial, sans-serif;
+    font-size:0.78rem;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+  }
+  .suggest-item:last-child{border-bottom:none;}
+  .suggest-item .meta{color:#6a6558; font-size:0.72rem;}
+
+  /* --- 5.4 duplicate warning banner --- */
+  .dupe-warning{
+    display:none;
+    border:2px solid var(--amber);
+    background:#fff8ec;
+    border-radius:4px;
+    padding:14px 16px;
+    margin-top:14px;
+    font-family:Arial, sans-serif;
+  }
+  .dupe-warning.show{display:block;}
+  .dupe-warning h3{
+    margin:0 0 8px 0;
+    font-size:0.85rem;
+    color:#8a5a1f;
+  }
+  .dupe-match{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:8px 10px;
+    margin-bottom:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    font-size:0.78rem;
+  }
+  .dupe-actions{display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;}
+
+  /* --- 5.7 DPDP consent panel --- */
+  .consent-box{
+    border:1px solid var(--line);
+    background:#fbfaf6;
+    border-radius:4px;
+    padding:12px 14px;
+    margin-top:12px;
+    font-family:Arial, sans-serif;
+    font-size:0.78rem;
+    color:#4a463c;
+    line-height:1.5;
+  }
+  .consent-box .purposes{margin:8px 0 0 0; padding-left:18px;}
+  .consent-box .purposes li{margin-bottom:2px;}
+
+  /* --- 5.8 MLC panel --- */
+  .mlc-box{
+    display:none;
+    border:1px dashed var(--danger);
+    background:#fff6f5;
+    border-radius:4px;
+    padding:12px 14px;
+    margin-top:10px;
+  }
+  .mlc-box.show{display:block;}
+
+  /* --- 5.1 direct UHID lookup result --- */
+  .lookup-result{
+    margin-top:10px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:#fbfaf6;
+    padding:10px 12px;
+    font-family:Arial, sans-serif;
+    font-size:0.8rem;
+    display:none;
+  }
+  .lookup-result.show{display:block;}
+  .lookup-result.not-found{border-color:var(--danger); color:var(--danger); background:#fff6f5;}
+  .lookup-result dl{margin:6px 0 0 0; display:grid; grid-template-columns:auto 1fr; gap:2px 10px;}
+  .lookup-result dt{color:#6a6558; font-weight:600;}
+  .lookup-result dd{margin:0;}
+
+  .subpanel{
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:14px 16px;
+    margin-top:14px;
+    background:#fbfaf6;
+  }
+  .subpanel h3{
+    font-family: Arial, sans-serif;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--teal-dark);
+    margin:0 0 10px 0;
+  }
+  .link-btn{
+    background:none;
+    border:none;
+    color:var(--teal-dark);
+    text-decoration:underline;
+    font-family:Arial, sans-serif;
+    font-size:0.7rem;
+    padding:0;
+    margin:0;
+    cursor:pointer;
+  }
+  .link-btn:hover{color:var(--teal);}
+  .refresh-btn{float:right;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>UHID Registration Desk</h1>
+      <div class="sub">Patient Registration &amp; Identity — Front Desk Console</div>
+    </div>
+    <div class="badge-row">
+      Hospital code: <strong id="hospCodeDisplay">AH</strong><br>
+      Session date: <span id="todayDisplay"></span>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- LEFT: main registration form -->
+    <div>
+      <!-- 5.1 Direct lookup by UHID (exact match) -->
+      <div class="panel">
+        <h2>Look up existing patient by UHID</h2>
+        <div class="verify-row">
+          <input type="text" id="uhidLookup" placeholder="e.g., AH-26-100042-3" autocomplete="off">
+          <button type="button" class="secondary small" onclick="lookupByUhid()">Search</button>
+        </div>
+        <div id="uhidLookupResult"></div>
+      </div>
+
+      <div class="panel">
+        <h2>New / Returning Patient Registration</h2>
+        <form id="regForm">
+
+          <label for="name">Full name</label>
+          <input type="text" id="name" placeholder="e.g., Lakshmi Narayan" required autocomplete="off">
+          <!-- 5.1 Search / duplicate-avoidance: live suggestions as the front desk types -->
+          <div class="suggest-box" id="suggestBox">
+            <div class="suggest-head">Possible existing records</div>
+            <div id="suggestList"></div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label for="dob">Date of birth</label>
+              <input type="date" id="dob">
+            </div>
+            <div>
+              <label for="age">Age (auto)</label>
+              <input type="text" id="age" placeholder="—" readonly>
+            </div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label for="sex">Sex</label>
+              <select id="sex">
+                <option value="">Select</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label for="mobile">Mobile number</label>
+              <input type="text" id="mobile" placeholder="10-digit mobile" maxlength="10" autocomplete="off">
+              <div class="hint">Must start 6–9, exactly 10 digits</div>
+            </div>
+          </div>
+
+          <label for="address">Address</label>
+          <input type="text" id="address" placeholder="House / street / locality">
+
+          <div class="row2">
+            <div>
+              <label for="pin">PIN code</label>
+              <input type="text" id="pin" placeholder="6-digit PIN" maxlength="6">
+            </div>
+            <div>
+              <label for="guardian">Guardian name <span id="guardianReq" style="color:var(--danger);display:none;">*</span></label>
+              <input type="text" id="guardian" placeholder="Required if age < 18">
+            </div>
+          </div>
+
+          <hr class="divider">
+
+          <label>ABHA (National Health ID)</label>
+          <div class="verify-row">
+            <input type="text" id="abha" placeholder="14-digit ABHA number (optional)">
+            <button type="button" class="secondary small" onclick="verifyAbha()">Verify ABHA</button>
+            <span class="status-pill pending" id="abhaStatus">Not linked</span>
+          </div>
+          <div class="hint">ABHA is optional — care is never denied for refusal. Linking can be completed later if the gateway is down.</div>
+
+          <hr class="divider">
+
+          <div class="row2">
+            <div>
+              <label for="payer">Payer / scheme</label>
+              <select id="payer" onchange="togglePmjay()">
+                <option value="Cash">Cash</option>
+                <option value="PMJAY">PMJAY</option>
+                <option value="CGHS">CGHS</option>
+                <option value="ECHS">ECHS</option>
+                <option value="ESI">ESI</option>
+                <option value="Private TPA">Private TPA</option>
+                <option value="Corporate">Corporate</option>
+              </select>
+            </div>
+            <div>
+              <label for="department">Department (for queue token)</label>
+              <select id="department">
+                <option>General OPD</option>
+                <option>Emergency</option>
+                <option>Pediatrics</option>
+                <option>Gynaecology &amp; Obstetrics</option>
+                <option>Orthopaedics</option>
+                <option>Cardiology</option>
+                <option>ENT</option>
+              </select>
+            </div>
+          </div>
+          <div class="verify-row" id="pmjayRow" style="display:none; margin-top:8px;">
+            <button type="button" class="secondary small" onclick="verifyPmjay()">Verify PMJAY Beneficiary</button>
+            <span class="status-pill pending" id="pmjayStatus">Not verified</span>
+          </div>
+
+          <hr class="divider">
+
+          <label>Newborn registration</label>
+          <div class="checkline">
+            <input type="checkbox" id="isNewborn" onchange="toggleNewborn()">
+            <span>This is a newborn — link to mother's record</span>
+          </div>
+          <div id="motherUhidBox" style="display:none; margin-top:8px;">
+            <label for="motherUhid">Mother's UHID</label>
+            <input type="text" id="motherUhid" placeholder="e.g., AH-26-000041">
+          </div>
+
+          <hr class="divider">
+
+          <!-- 5.8 MLC flagging -->
+          <label>Medico-Legal Case (MLC)</label>
+          <div class="checkline">
+            <input type="checkbox" id="isMlc" onchange="toggleMlc()">
+            <span>Flag as a Medico-Legal Case (assault, RTA, poisoning, burns, etc.)</span>
+          </div>
+          <div class="mlc-box" id="mlcBox">
+            <div class="row2">
+              <div>
+                <label for="mlcType">Case type <span style="color:var(--danger);">*</span></label>
+                <select id="mlcType">
+                  <option value="">Select</option>
+                  <option>Road Traffic Accident</option>
+                  <option>Assault / Physical violence</option>
+                  <option>Poisoning</option>
+                  <option>Burns</option>
+                  <option>Suicide / Self-harm attempt</option>
+                  <option>Sexual assault</option>
+                  <option>Firearm / stab injury</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div>
+                <label for="broughtBy">Brought in by</label>
+                <input type="text" id="broughtBy" placeholder="e.g., relative, bystander, police">
+              </div>
+            </div>
+            <div class="checkline">
+              <input type="checkbox" id="informedPolice">
+              <span>Police already informed</span>
+            </div>
+            <div class="row2">
+              <div>
+                <label for="stationName">Police station</label>
+                <input type="text" id="stationName" placeholder="Jurisdiction station">
+              </div>
+              <div>
+                <label for="intimationNumber">Intimation / FIR no.</label>
+                <input type="text" id="intimationNumber" placeholder="If available">
+              </div>
+            </div>
+            <label for="mlcRemarks">Remarks</label>
+            <textarea id="mlcRemarks" placeholder="Brief clinical/circumstantial note for the MLC register"></textarea>
+            <div class="hint">MLC cases are logged to the statutory MLC register and audit trail regardless of payer or ABHA status.</div>
+          </div>
+
+          <hr class="divider">
+
+          <!-- 5.7 DPDP notice & consent -->
+          <label>DPDP Notice &amp; Consent</label>
+          <div class="consent-box" id="consentBox">Loading notice…</div>
+          <div class="checkline">
+            <input type="checkbox" id="consentAck" required>
+            <span>Notice read aloud / shown to patient or attendant and acknowledged</span>
+          </div>
+          <div class="checkline">
+            <input type="checkbox" id="consentOptional" checked>
+            <span>Patient additionally consents to scheme/insurance data sharing (optional)</span>
+          </div>
+          <div class="hint">Registration and treatment proceed even if only the notice is acknowledged — care is never conditional on optional consent.</div>
+
+          <button type="submit">Register patient &amp; generate UHID</button>
+
+          <!-- 5.4 duplicate warning surface -->
+          <div class="dupe-warning" id="dupeWarning">
+            <h3>⚠ Possible existing record(s) found</h3>
+            <div id="dupeMatches"></div>
+            <div class="dupe-actions">
+              <button type="button" class="amber small" onclick="confirmRegisterAnyway()">Register as new anyway</button>
+              <button type="button" class="secondary small" onclick="cancelDupeWarning()">Cancel &amp; review</button>
+            </div>
+          </div>
+
+          <div class="uhid-out" id="uhidOut"></div>
+        </form>
+      </div>
+
+      <div class="panel quick-box">
+        <h2>⚠ Unknown / Unconscious Patient — Quick Registration</h2>
+        <p>Skips all fields. Issues a temporary UHID and queue token immediately. Treatment is never delayed for identity (FR-14). Reconcile identity later once known.</p>
+        <button type="button" class="danger" onclick="quickRegisterUnknown()">Quick-register unknown patient</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: records, queue, merge, audit, MLC register -->
+    <div>
+      <div class="panel" style="align-self:start;">
+        <h2>Registered today <span class="count-chip" id="recordCount">0</span></h2>
+        <table id="recordsTable">
+          <thead>
+            <tr>
+              <th>UHID</th>
+              <th>Name</th>
+              <th>Age/Sex</th>
+              <th>ABHA</th>
+              <th>Payer</th>
+            </tr>
+          </thead>
+          <tbody id="recordsBody">
+            <tr class="empty-row"><td colspan="5">No patients registered yet this session.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 5.11 Queue token status -->
+      <div class="panel">
+        <h2>Queue status <button class="link-btn refresh-btn" onclick="refreshQueue()">refresh</button></h2>
+        <table id="queueTable">
+          <thead><tr><th>Token</th><th>Dept.</th><th>Patient</th><th>UHID</th></tr></thead>
+          <tbody id="queueBody"><tr class="empty-row"><td colspan="4">No tokens issued yet today.</td></tr></tbody>
+        </table>
+      </div>
+
+      <!-- 5.5 Merge duplicate records -->
+      <div class="panel">
+        <h2>Merge duplicate records</h2>
+        <div class="hint" style="margin-top:0;">Keep the older/primary UHID as the surviving record; the duplicate is marked merged, never deleted.</div>
+        <div class="row2" style="margin-top:10px;">
+          <div>
+            <label for="mergePrimary">Primary UHID (keep)</label>
+            <input type="text" id="mergePrimary" placeholder="e.g., AH-26-100042-3">
+          </div>
+          <div>
+            <label for="mergeDuplicate">Duplicate UHID (merge in)</label>
+            <input type="text" id="mergeDuplicate" placeholder="e.g., AH-26-100078-1">
+          </div>
+        </div>
+        <button type="button" class="secondary small" onclick="mergePatients()">Merge records</button>
+        <div id="mergeResult" class="hint"></div>
+      </div>
+
+      <!-- 5.8 MLC register -->
+      <div class="panel">
+        <h2>MLC register <button class="link-btn refresh-btn" onclick="refreshMlc()">refresh</button></h2>
+        <table id="mlcTable">
+          <thead><tr><th>UHID</th><th>Name</th><th>Type</th><th>Police</th></tr></thead>
+          <tbody id="mlcBody"><tr class="empty-row"><td colspan="4">No MLC cases logged yet.</td></tr></tbody>
+        </table>
+      </div>
+
+      <!-- 5.5 Audit log -->
+      <div class="panel">
+        <h2>Audit log <button class="link-btn refresh-btn" onclick="refreshAudit()">refresh</button></h2>
+        <table id="auditTable">
+          <thead><tr><th>When</th><th>Action</th><th>Details</th></tr></thead>
+          <tbody id="auditBody"><tr class="empty-row"><td colspan="3">No audit events yet.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API_BASE = '/api';
+let abhaLinked = false;
+let pmjayVerified = false;
+let pendingRegistrationPayload = null; // used when a duplicate warning needs confirmation
+
+document.getElementById('todayDisplay').textContent = new Date().toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
+
+// ---------- 5.1 Direct lookup by UHID (exact match) ----------
+async function lookupByUhid(){
+  const uhid = document.getElementById('uhidLookup').value.trim();
+  const box = document.getElementById('uhidLookupResult');
+  if(!uhid){
+    box.className = 'lookup-result show';
+    box.textContent = 'Enter a UHID to look up.';
+    return;
+  }
+  try{
+    const res = await fetch(`${API_BASE}/patients/${encodeURIComponent(uhid)}`);
+    const data = await res.json();
+    if(!res.ok){
+      box.className = 'lookup-result show not-found';
+      box.textContent = data.error || `No patient found with UHID ${uhid}.`;
+      return;
+    }
+    box.className = 'lookup-result show';
+    box.innerHTML = `
+      <strong>${data.name}</strong> ${data.type === 'merged' ? `<span class="tag no">merged → ${data.mergedInto}</span>` : ''}
+      <dl>
+        <dt>UHID</dt><dd>${data.uhid}</dd>
+        <dt>Age / Sex</dt><dd>${data.age || '—'} / ${data.sex || '—'}</dd>
+        <dt>Mobile</dt><dd>${data.mobile || '—'}</dd>
+        <dt>ABHA</dt><dd>${data.abha || '—'} ${data.abhaLinked ? '<span class="tag ok">Linked</span>' : ''}</dd>
+        <dt>Payer</dt><dd>${data.payer}</dd>
+        <dt>Department</dt><dd>${data.department || '—'}</dd>
+        <dt>Registered</dt><dd>${new Date(data.createdAt).toLocaleString('en-IN')}</dd>
+      </dl>
+    `;
+  }catch(err){
+    box.className = 'lookup-result show not-found';
+    box.textContent = 'Could not reach backend.';
+  }
+}
+document.getElementById('uhidLookup').addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){ e.preventDefault(); lookupByUhid(); }
+});
+
+// --- Age auto-calc from DOB ---
+document.getElementById('dob').addEventListener('change', function(){
+  const dob = new Date(this.value);
+  if(isNaN(dob)) { document.getElementById('age').value = ''; return; }
+  const diff = Date.now() - dob.getTime();
+  const age = Math.floor(diff / (1000*60*60*24*365.25));
+  document.getElementById('age').value = age + ' yrs';
+  document.getElementById('guardianReq').style.display = age < 18 ? 'inline' : 'none';
+});
+
+// ---------- 5.1 Search / duplicate-avoidance: live suggestions ----------
+let searchDebounce = null;
+function scheduleSuggest(){
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(runSuggestSearch, 350);
+}
+['name','mobile','dob'].forEach(id => {
+  document.getElementById(id).addEventListener('input', scheduleSuggest);
+});
+
+async function runSuggestSearch(){
+  const name = document.getElementById('name').value.trim();
+  const mobile = document.getElementById('mobile').value.trim();
+  const dob = document.getElementById('dob').value;
+  const box = document.getElementById('suggestBox');
+  const list = document.getElementById('suggestList');
+
+  if(name.length < 3 && mobile.length < 10 && !dob){
+    box.classList.remove('show');
+    return;
+  }
+  try{
+    const params = new URLSearchParams({ name, mobile, dob });
+    const res = await fetch(`${API_BASE}/patients/search?${params.toString()}`);
+    const data = await res.json();
+    if(!data.matches || data.matches.length === 0){
+      box.classList.remove('show');
+      return;
+    }
+    list.innerHTML = data.matches.map(m => `
+      <div class="suggest-item">
+        <span><strong>${m.uhid}</strong> — ${m.name} <span class="meta">(${m.age || '—'}/${m.sex || '—'}, ${m.reasons.join(', ')})</span></span>
+        <button type="button" class="link-btn" onclick="useExistingUhid('${m.uhid}')">Use this record</button>
+      </div>
+    `).join('');
+    box.classList.add('show');
+  }catch(err){
+    box.classList.remove('show');
+  }
+}
+
+function useExistingUhid(uhid){
+  document.getElementById('suggestBox').classList.remove('show');
+  alert(`Existing UHID ${uhid} selected. Please continue this patient's visit under that UHID instead of registering a new one (see it in the "Registered today" list, or use Merge if a duplicate was already created).`);
+}
+
+// --- ABHA verify — calls the backend stub (swap server-side for real ABDM call later) ---
+async function verifyAbha(){
+  const val = document.getElementById('abha').value.trim();
+  const pill = document.getElementById('abhaStatus');
+  if(!val){
+    alert('Enter an ABHA number first, or leave blank — ABHA is optional.');
+    return;
+  }
+  pill.textContent = 'Verifying…';
+  try{
+    const res = await fetch(`${API_BASE}/verify/abha`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ abha: val })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'Verification failed');
+    abhaLinked = true;
+    pill.textContent = '✓ Linked';
+    pill.classList.remove('pending');
+    pill.classList.add('linked');
+  }catch(err){
+    pill.textContent = 'Not linked';
+    alert(err.message);
+  }
+}
+
+// --- PMJAY toggle + verify against backend stub ---
+function togglePmjay(){
+  const isPmjay = document.getElementById('payer').value === 'PMJAY';
+  document.getElementById('pmjayRow').style.display = isPmjay ? 'flex' : 'none';
+}
+async function verifyPmjay(){
+  const pill = document.getElementById('pmjayStatus');
+  pill.textContent = 'Checking BIS…';
+  try{
+    const res = await fetch(`${API_BASE}/verify/pmjay`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: '{}' });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'Verification failed');
+    pmjayVerified = true;
+    pill.textContent = '✓ Beneficiary verified';
+    pill.classList.remove('pending');
+    pill.classList.add('linked');
+  }catch(err){
+    pill.textContent = 'Not verified';
+    alert(err.message);
+  }
+}
+
+// --- Newborn toggle ---
+function toggleNewborn(){
+  document.getElementById('motherUhidBox').style.display =
+    document.getElementById('isNewborn').checked ? 'block' : 'none';
+}
+
+// --- 5.8 MLC toggle ---
+function toggleMlc(){
+  document.getElementById('mlcBox').classList.toggle('show', document.getElementById('isMlc').checked);
+}
+
+// --- 5.7 Load DPDP notice text once on page load ---
+async function loadConsentNotice(){
+  const box = document.getElementById('consentBox');
+  try{
+    const res = await fetch(`${API_BASE}/consent/notice`);
+    const notice = await res.json();
+    box.innerHTML = `
+      <strong>DPDP Notice ${notice.version}</strong> (effective ${notice.effectiveFrom})<br>
+      ${notice.text}
+      <ul class="purposes">${notice.purposes.map(p => `<li>${p}</li>`).join('')}</ul>
+    `;
+  }catch(err){
+    box.textContent = 'Could not load DPDP notice text — proceed with the standard verbal notice.';
+  }
+}
+
+// --- Table rendering (fetches fresh list from backend) ---
+async function refreshTable(){
+  const body = document.getElementById('recordsBody');
+  try{
+    const res = await fetch(`${API_BASE}/patients`);
+    const records = await res.json();
+    document.getElementById('recordCount').textContent = records.length;
+    if(records.length === 0){
+      body.innerHTML = '<tr class="empty-row"><td colspan="5">No patients registered yet this session.</td></tr>';
+      return;
+    }
+    body.innerHTML = records.map(r => `
+      <tr>
+        <td><strong>${r.uhid}</strong>${r.type==='merged' ? ' <span class="tag no">merged→'+r.mergedInto+'</span>' : ''}</td>
+        <td>${r.name}</td>
+        <td>${r.age || '—'} / ${r.sex || '—'}</td>
+        <td><span class="tag ${r.abhaLinked ? 'ok' : 'no'}">${r.abhaLinked ? 'Linked' : 'Not linked'}</span></td>
+        <td>${r.payer}${r.type === 'unknown' ? ' <span class="tag no">Unreconciled</span>' : ''}${r.mlc && r.mlc.isMLC ? ' <span class="tag mlc">MLC</span>' : ''}</td>
+      </tr>
+    `).join('');
+  }catch(err){
+    body.innerHTML = `<tr class="empty-row"><td colspan="5">Could not reach backend: ${err.message}</td></tr>`;
+  }
+}
+
+// --- 5.11 Queue table ---
+async function refreshQueue(){
+  const body = document.getElementById('queueBody');
+  try{
+    const res = await fetch(`${API_BASE}/queue`);
+    const data = await res.json();
+    if(!data.tokens || data.tokens.length === 0){
+      body.innerHTML = '<tr class="empty-row"><td colspan="4">No tokens issued yet today.</td></tr>';
+      return;
+    }
+    body.innerHTML = data.tokens.map(t => `
+      <tr>
+        <td><strong>${t.department.slice(0,3).toUpperCase()}-${t.tokenNo}</strong></td>
+        <td>${t.department}</td>
+        <td>${t.name}</td>
+        <td>${t.uhid}</td>
+      </tr>
+    `).join('');
+  }catch(err){
+    body.innerHTML = `<tr class="empty-row"><td colspan="4">Could not reach backend.</td></tr>`;
+  }
+}
+
+// --- 5.8 MLC register table ---
+async function refreshMlc(){
+  const body = document.getElementById('mlcBody');
+  try{
+    const res = await fetch(`${API_BASE}/mlc`);
+    const cases = await res.json();
+    if(cases.length === 0){
+      body.innerHTML = '<tr class="empty-row"><td colspan="4">No MLC cases logged yet.</td></tr>';
+      return;
+    }
+    body.innerHTML = cases.map(c => `
+      <tr>
+        <td><strong>${c.uhid}</strong></td>
+        <td>${c.name}</td>
+        <td>${c.mlcType}</td>
+        <td><span class="tag ${c.informedPolice ? 'ok' : 'no'}">${c.informedPolice ? 'Informed' : 'Pending'}</span></td>
+      </tr>
+    `).join('');
+  }catch(err){
+    body.innerHTML = `<tr class="empty-row"><td colspan="4">Could not reach backend.</td></tr>`;
+  }
+}
+
+// --- 5.5 Audit log table ---
+async function refreshAudit(){
+  const body = document.getElementById('auditBody');
+  try{
+    const res = await fetch(`${API_BASE}/audit`);
+    const log = await res.json();
+    if(log.length === 0){
+      body.innerHTML = '<tr class="empty-row"><td colspan="3">No audit events yet.</td></tr>';
+      return;
+    }
+    body.innerHTML = log.map(e => `
+      <tr>
+        <td>${new Date(e.at).toLocaleString('en-IN')}</td>
+        <td><span class="tag no">${e.action}</span></td>
+        <td>${JSON.stringify(e.details).replace(/[{}"]/g,'').replace(/,/g, ', ')}</td>
+      </tr>
+    `).join('');
+  }catch(err){
+    body.innerHTML = `<tr class="empty-row"><td colspan="3">Could not reach backend.</td></tr>`;
+  }
+}
+
+// --- 5.5 Merge form ---
+async function mergePatients(){
+  const primaryUhid = document.getElementById('mergePrimary').value.trim();
+  const duplicateUhid = document.getElementById('mergeDuplicate').value.trim();
+  const result = document.getElementById('mergeResult');
+  if(!primaryUhid || !duplicateUhid){
+    result.textContent = 'Enter both UHIDs to merge.';
+    return;
+  }
+  try{
+    const res = await fetch(`${API_BASE}/patients/merge`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ primaryUhid, duplicateUhid, mergedBy: 'front-desk' })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'Merge failed');
+    result.textContent = `✓ Merged ${duplicateUhid} into ${primaryUhid}.`;
+    document.getElementById('mergePrimary').value = '';
+    document.getElementById('mergeDuplicate').value = '';
+    refreshTable();
+    refreshAudit();
+  }catch(err){
+    result.textContent = err.message;
+  }
+}
+
+// --- Build the registration payload from current form state ---
+function buildPayload(){
+  const name = document.getElementById('name').value.trim();
+  const mobile = document.getElementById('mobile').value.trim();
+  const pin = document.getElementById('pin').value.trim();
+  const age = document.getElementById('age').value.replace(' yrs','');
+  const guardian = document.getElementById('guardian').value.trim();
+  const isNewborn = document.getElementById('isNewborn').checked;
+  const motherUhid = document.getElementById('motherUhid').value.trim();
+  const isMlc = document.getElementById('isMlc').checked;
+
+  const consentPurposes = [];
+  if(document.getElementById('consentAck').checked) consentPurposes.push('registration', 'clinical_care');
+  if(document.getElementById('consentOptional').checked) consentPurposes.push('billing_scheme');
+
+  return {
+    name,
+    dob: document.getElementById('dob').value,
+    age,
+    sex: document.getElementById('sex').value,
+    mobile,
+    address: document.getElementById('address').value.trim(),
+    pin,
+    guardian,
+    abha: document.getElementById('abha').value.trim(),
+    abhaLinked,
+    payer: document.getElementById('payer').value,
+    payerVerified: pmjayVerified,
+    isNewborn,
+    motherUhid: isNewborn ? motherUhid : null,
+    department: document.getElementById('department').value,
+    consent: {
+      acknowledged: document.getElementById('consentAck').checked,
+      purposes: consentPurposes,
+      mode: 'digital'
+    },
+    mlc: {
+      isMLC: isMlc,
+      mlcType: document.getElementById('mlcType').value,
+      broughtBy: document.getElementById('broughtBy').value.trim(),
+      informedPolice: document.getElementById('informedPolice').checked,
+      stationName: document.getElementById('stationName').value.trim(),
+      intimationNumber: document.getElementById('intimationNumber').value.trim(),
+      remarks: document.getElementById('mlcRemarks').value.trim()
+    }
+  };
+}
+
+function showRegistrationResult(data){
+  const out = document.getElementById('uhidOut');
+  out.classList.add('show');
+  out.innerHTML = `✓ Registered — UHID: <strong>${data.uhid}</strong>` +
+    (data.isNewborn && data.motherUhid ? `<br>Linked to mother's UHID: ${data.motherUhid}` : '') +
+    (data.queueToken ? `<div class="token-line">Queue token issued: <strong>${data.queueToken.department.slice(0,3).toUpperCase()}-${data.queueToken.tokenNo}</strong> (${data.queueToken.department})</div>` : '');
+}
+
+function resetFormState(){
+  document.getElementById('regForm').reset();
+  document.getElementById('age').value = '';
+  document.getElementById('motherUhidBox').style.display = 'none';
+  document.getElementById('pmjayRow').style.display = 'none';
+  document.getElementById('mlcBox').classList.remove('show');
+  document.getElementById('suggestBox').classList.remove('show');
+  document.getElementById('abhaStatus').textContent = 'Not linked';
+  document.getElementById('abhaStatus').className = 'status-pill pending';
+  document.getElementById('pmjayStatus').textContent = 'Not verified';
+  document.getElementById('pmjayStatus').className = 'status-pill pending';
+  document.getElementById('consentOptional').checked = true;
+  abhaLinked = false;
+  pmjayVerified = false;
+  pendingRegistrationPayload = null;
+}
+
+// --- Form submit: main registration (handles 5.4 duplicate-warning flow) ---
+document.getElementById('regForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  document.getElementById('dupeWarning').classList.remove('show');
+  const payload = buildPayload();
+  await attemptRegistration(payload);
+});
+
+async function attemptRegistration(payload){
+  try{
+    const res = await fetch(`${API_BASE}/patients`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if(res.status === 409 && data.duplicateWarning){
+      // 5.4 Duplicate warning — hold the payload and let the front desk decide
+      pendingRegistrationPayload = payload;
+      const matchesBox = document.getElementById('dupeMatches');
+      matchesBox.innerHTML = data.matches.map(m => `
+        <div class="dupe-match">
+          <span><strong>${m.uhid}</strong> — ${m.name}, ${m.age || '—'}/${m.sex || '—'} <br><span class="meta">${m.reasons.join(', ')}</span></span>
+          <button type="button" class="secondary small" onclick="useExistingUhid('${m.uhid}')">Use this UHID</button>
+        </div>
+      `).join('');
+      document.getElementById('dupeWarning').classList.add('show');
+      return;
+    }
+
+    if(!res.ok) throw new Error(data.error || 'Registration failed');
+
+    showRegistrationResult(data);
+    resetFormState();
+    refreshTable();
+    refreshQueue();
+    if(data.mlc && data.mlc.isMLC) refreshMlc();
+  }catch(err){
+    alert(err.message);
+  }
+}
+
+// 5.4 "Register as new anyway" — resubmits with confirmDuplicate: true
+async function confirmRegisterAnyway(){
+  if(!pendingRegistrationPayload) return;
+  document.getElementById('dupeWarning').classList.remove('show');
+  await attemptRegistration({ ...pendingRegistrationPayload, confirmDuplicate: true });
+  await refreshAudit();
+}
+
+function cancelDupeWarning(){
+  document.getElementById('dupeWarning').classList.remove('show');
+  pendingRegistrationPayload = null;
+}
+
+// --- Unknown / unconscious patient quick path ---
+async function quickRegisterUnknown(){
+  try{
+    const res = await fetch(`${API_BASE}/patients/unknown`, { method: 'POST' });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'Registration failed');
+    const tokenTxt = data.queueToken ? ` Queue token: ${data.queueToken.department.slice(0,3).toUpperCase()}-${data.queueToken.tokenNo}.` : '';
+    alert(`Unknown patient registered.\nTemporary UHID: ${data.uhid}\nFlag added for later identity reconciliation.${tokenTxt}`);
+    refreshTable();
+    refreshQueue();
+  }catch(err){
+    alert(err.message);
+  }
+}
+
+// Initial load
+loadConsentNotice();
+refreshTable();
+refreshQueue();
+refreshMlc();
+refreshAudit();
+</script>
+</body>
+</html>

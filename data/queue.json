@@ -1,0 +1,50 @@
+{
+  "date": "2026-07-16",
+  "counters": {
+    "General OPD": 2,
+    "Emergency": 2,
+    "ENT": 1
+  },
+  "tokens": [
+    {
+      "tokenNo": 1,
+      "department": "General OPD",
+      "uhid": "AH-26-776018-4",
+      "name": "Lakshmi narayan",
+      "issuedAt": "2026-07-16T12:29:41.662Z",
+      "status": "waiting"
+    },
+    {
+      "tokenNo": 1,
+      "department": "Emergency",
+      "uhid": "AH-26-299912-6",
+      "name": "Unknown",
+      "issuedAt": "2026-07-16T12:29:46.596Z",
+      "status": "waiting"
+    },
+    {
+      "tokenNo": 2,
+      "department": "General OPD",
+      "uhid": "AH-26-895419-0",
+      "name": "shruthi",
+      "issuedAt": "2026-07-16T12:32:15.608Z",
+      "status": "waiting"
+    },
+    {
+      "tokenNo": 1,
+      "department": "ENT",
+      "uhid": "AH-26-667755-3",
+      "name": "Kalyan V",
+      "issuedAt": "2026-07-16T12:42:23.100Z",
+      "status": "waiting"
+    },
+    {
+      "tokenNo": 2,
+      "department": "Emergency",
+      "uhid": "AH-26-387603-4",
+      "name": "Unknown",
+      "issuedAt": "2026-07-16T13:06:34.787Z",
+      "status": "waiting"
+    }
+  ]
+}
